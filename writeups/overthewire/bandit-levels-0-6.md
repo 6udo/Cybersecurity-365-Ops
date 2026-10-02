@@ -51,7 +51,7 @@
 
 &#x20;            readable file works but in a scenario with hundreds of files it is
 
-&#x20;            slow i used the command {file ./-} the command looks at all the
+&#x20;            slow i used the command {file ./-*} the command looks at all the
 
 &#x20;            dashed files in the current directory and lists the type of
 
