@@ -1,46 +1,26 @@
-**-Level 10-11 -** the data.txt is base64 encoded
+**-Level 10-11** 
 
-&#x20;             Base64 is a translation mechanism, not an encryption protocol. It
 
-&#x20;             takes raw binary data (which might contain unprintable characters
 
-&#x20;             that break text-based systems like email or HTTP) and translates
+**-** the data.txt is base64 encoded Base64 is a translation mechanism, not an encryption protocol. It takes raw binary data (which might contain unprintable characters that break text-based systems like email or HTTP) and translates it into a safe alphabet of 64 characters: A-Z, a-z, 0-9, +, and /. It is purely used to safely transport data, offering zero security. You can easily spot Base64 because it often ends with one or two equal signs (= or ==), which are used as "padding" to make the data fit the correct size.
+command used **\[base64 -d data.txt]** he base64 utility is built into Linux for this exact purpose. By passing the **-d** (decode) flag and pointing it at data.txt, the command reads the obfuscated string, translates it back into its original ASCII format, and prints the plaintext password to your terminal.
+another way to solve **\[cat data.txt | base64 -d]**
 
-&#x20;             it into a safe alphabet of 64 characters: A-Z, a-z, 0-9, +, and
 
-&#x20;             /. It is purely used to safely transport data, offering zero
+**-Level 11-12** 
 
-&#x20;             security. You can easily spot Base64 because it often ends with
 
-&#x20;             one or two equal signs (= or ==), which are used as "padding" to
 
-&#x20;             make the data fit the correct size.
-command used \[base64 -d data.txt] he base64 utility is built into
+\- ROT13 (Rotate by 13 places) is a simple substitution cipher. It replaces a letter with the 13th letter after it in the alphabet (A becomes N, B becomes O, etc.). Because the English alphabet has 26 letters, ROT13 is symmetric—if you rotate a letter 13 spaces, and then 13 spaces again, you end up exactly where you started. It was popular in early internet forums to hide movie spoilers, but it is cryptographically worthless.
+- To solve this level  i used the web platform cyberchef to decipher the text
 
-&#x20;             Linux for this exact purpose. By passing the -d (decode) flag and
 
-&#x20;             pointing it at data.txt, the command reads the obfuscated string,
 
-&#x20;             translates it back into its original ASCII format, and prints the
+**-Level 12-13 -**
 
-&#x20;             plaintext password to your terminal.
-another way to solve \[cat data.txt | base64 -d]
-**-Level 11-12** - ROT13 (Rotate by 13 places) is a simple substitution cipher. It
+&#x20;
 
-&#x20;              replaces a letter with the 13th letter after it in the alphabet
-
-&#x20;              (A becomes N, B becomes O, etc.). Because the English alphabet
-
-&#x20;              has 26 letters, ROT13 is symmetric—if you rotate a letter 13
-
-&#x20;              spaces, and then 13 spaces again, you end up exactly where you
-
-&#x20;              started. It was popular in early internet forums to hide movie
-
-&#x20;              spoilers, but it is cryptographically worthless.
-**-Level 12-13 -** 
-
-Concept Required: Magic Numbers, Hexdumps, and File Archives/Compression.
+Concept Required: Magic Numbers, Hex dumps, and File Archives/Compression.
 
 
 
@@ -48,7 +28,7 @@ Concept Required: Magic Numbers, Hexdumps, and File Archives/Compression.
 
 
 
-Hexdump: A hexadecimal (base-16) representation of a binary file. It allows humans to read raw computer bytes on a screen.
+Hex dump: A hexadecimal (base-16) representation of a binary file. It allows humans to read raw computer bytes on a screen.
 
 
 
@@ -57,25 +37,36 @@ Magic Numbers: Linux does not care if a file is named picture.jpg or document.pd
 
 
 Compression vs. Archiving: tar (Tape Archive) bundles multiple files together without shrinking them. gzip and bzip2 are mathematical algorithms that find repeated patterns in data to shrink the file size.
+
+
 **The command(s) to solve the level:**
 
 
 
-\[mkdir /tmp/myworkspace123 \&\& cp data.txt /tmp/myworkspace123/ \&\& cd /tmp/myworkspace123/]
+**\[mkdir /tmp/myworkspace123 \&\& cp data.txt /tmp/myworkspace123/ \&\& cd /tmp/myworkspace123/]**
 
 
 
-\[xxd -r data.txt > output.bin]
+**\[xxd -r data.txt > output] >** makes the data to original binary
 
 
 
-The loop: file output.bin, then rename based on the output (mv output.bin output.gz), then decompress (gzip -d output.gz). Repeat.
+The loop: file output, then rename based on the output (mv output.bin output.gz), then decompress (gzip -d output.gz). Repeat.
+
+
+gzip -d \[decompress]
+
+bzip2 -d \[decompress]
+
+tar -xf \[extract file] \[tar is used to combine multiple files]
+
+mv originalfile whatfilenameisrequired \[changes file extension]
 
 
 
 **Explanation of what the command does:**
 
-You first create a sterile workspace in /tmp because you cannot write files in the home directory. The xxd -r command takes the hex text and reverses it back into raw binary (output.bin). From there, the file command reads the magic numbers to tell you what the file actually is. You use mv to give it the proper extension so the decompression tools (gzip, bzip2, tar) accept it and strip away the layer.
+You first create a sterile workspace in /tmp because you cannot write files in the home directory. The xxd -r command takes the hex text and reverses it back into raw binary (output). From there, the file command reads the magic numbers to tell you what the file actually is. You use mv to give it the proper extension so the decompression tools (gzip, bzip2, tar) accept it and strip away the layer.
 
 
 
@@ -101,7 +92,7 @@ Private Key: Stays strictly on your machine. It is the only thing that can unloc
 
 **The command to solve the level:**
 
-ssh -i sshkey.private bandit14@localhost -p 2220
+\[ssh -i sshkey.private bandit14@localhost -p 2220]
 
 
 
@@ -131,7 +122,7 @@ A "socket" is the software pipe that connects your terminal directly to that doo
 
 **The command to solve the level:**
 
-echo "paste\_your\_bandit14\_password\_here" | nc localhost 30000
+**\[echo "paste\_your\_bandit14\_password\_here" | nc localhost 30000]**
 
 
 
@@ -236,4 +227,111 @@ Because Port 30001 demands encryption, standard Netcat will immediately fail and
 
 
 **Socat**: Another highly advanced socket tool that can handle encryption: socat - OPENSSL:localhost:30001,verify=0
+
+
+**Level 16-17** 
+
+
+
+To conquer this level, we must combine the port scanning skills you used on Hack The Box with the OpenSSL skills from Bandit 15.
+
+
+
+Instead of guessing which port to connect to, you will programmatically scan the system to identify active services, filter out the decoys, and extract a cryptographic key to gain access to the next level.
+
+
+
+**Phase 1: Reconnaissance (Nmap)**
+
+You know the target is on localhost (the machine you are currently logged into) somewhere between ports 31000 and 32000. You need to find which ports are open and which ones speak SSL.
+
+
+
+Run this command in your Bandit 16 terminal:
+
+\[nmap -sV -p 31000-32000 localhost]
+
+
+
+**Explanation:**
+
+
+
+**\[-p 31000-32000]**: Restricts Nmap to only scan this specific 1,000-port block, speeding up the scan immensely.
+
+
+
+**\[-sV] (Service Versioning)**: This is the critical flag. Instead of just telling you a port is "open," Nmap will aggressively interact with the port to figure out exactly what software is running on it.
+
+
+
+The output will list a few open ports (usually 31046, 31518, 31691, 31790, and 31960). Notice the service names. Most are labeled echo (meaning they just bounce your text back to you). You are looking for the port running an unrecognized SSL service—typically 31790.
+
+
+
+**Phase 2: The Attack (OpenSSL)**
+
+Now that you have isolated the correct port, establish the encrypted tunnel.
+
+
+
+**Run the command:**
+
+**\[openssl s\_client -connect localhost:31790]**
+
+
+
+Once the SSL certificate data scrolls past and the connection holds open, paste your Bandit 16 password and press Enter.
+
+
+
+**Phase 3: The Capture (SSH Private Keys)**
+
+The server will not reply with a standard password string. It will output a massive block of text starting with \[-----BEGIN RSA PRIVATE KEY-----].
+
+
+
+This is an SSH Private Key. It is a cryptographic file that proves your identity to a server, completely replacing the need for a typed password.
+
+
+
+To use it, you must save it to a file and lock down its permissions:
+
+
+
+Copy the entire block of text, exactly from the -----BEGIN line down to the -----END line.
+
+
+
+Create a temporary workspace you own: \[mkdir /tmp/b17ops \&\& cd /tmp/b17ops]
+
+
+
+Create a new file: \[nano sshkey.private]
+
+
+
+Paste the key into the file, press Ctrl+O to save, Enter to confirm, and Ctrl+X to exit.
+
+
+
+Lock the permissions: chmod 600 sshkey.private (If you do not do this, SSH will throw a security error and refuse to use the key because it is readable by other users on the system).
+
+
+
+Log into Level 17: \[ssh -i sshkey.private bandit17@localhost -p 2220]
+
+
+
+Note: The -i flag stands for "identity file." It tells the SSH client to use your file for authentication instead of asking for a password.
+
+
+
+**Real-World Application: Hidden Services \& Identity Theft**
+
+In corporate networks, developers frequently spin up temporary internal services on high, non-standard ports (like 31000+) for debugging, and simply forget to shut them down. Because these ports are obscure, network administrators miss them. A penetration tester will use nmap -sV -p- (scanning all 65,535 ports) to find these forgotten "shadow IT" services.
+
+
+
+Furthermore, discovering an exposed SSH Private Key is a critical severity finding. If a hacker finds a private key (perhaps accidentally left in a public GitHub repository, an exposed web directory, or an unprotected FTP server), they can bypass password authentication entirely. Password policies (like requiring 16 characters and special symbols) become useless. The hacker can silently log into the network as the administrator, leaving zero "failed password" logs for the security team to detect.
 
