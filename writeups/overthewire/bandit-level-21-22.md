@@ -32,10 +32,15 @@ You didn't need to break in; you just needed to read the schedule, find the scri
 
 ```bash
 bandit21@bandit:~$ cd /etc/cron.d/
+```
+```bash
 bandit21@bandit:/etc/cron.d$ ls -al
 cronjob_bandit22
+```
+```bash
 bandit21@bandit:/etc/cron.d$ cat cronjob_bandit22
- [* * * * * bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null]
+ * * * * * bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+```
 * * * * * tells the cron daemon to run this task every single minute
 bandit22 is the user whose permissions will be used to run the task.
 /usr/bin/cronjob_bandit22.sh is the actual script being executed.
@@ -45,7 +50,9 @@ bandit21@bandit:/etc/cron.d$ cat /usr/bin/cronjob_bandit22.sh
 #!/bin/bash
 chmod 644 /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv -----> [this file is readable by the current user] 
 cat /etc/bandit_pass/bandit22 > /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv ---------> [every minute the password is being output with bandit22 privileges then being transfered to the temporary file path which we can read]
-
+```
+```bash
 bandit21@bandit:/etc/cron.d$ cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
 the password is output
+```
 
