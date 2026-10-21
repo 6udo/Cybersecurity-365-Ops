@@ -41,7 +41,7 @@ cronjob_bandit22
 bandit21@bandit:/etc/cron.d$ cat cronjob_bandit22
  * * * * * bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
 ```
-* * * * * tells the cron daemon to run this task every single minute
+[* * * * *] tells the cron daemon to run this task every single minute
 bandit22 is the user whose permissions will be used to run the task.
 /usr/bin/cronjob_bandit22.sh is the actual script being executed.
 bandit21@bandit:/etc/cron.d$ cat /usr/bin/cronjob_bandit22.sh
