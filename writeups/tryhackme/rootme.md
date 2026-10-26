@@ -147,4 +147,3 @@ os.execl(...): The "execute and leave" function. It tells the system to complete
 \- \*\*Least Privilege:\*\* Web application upload directories should never have execute permissions.
 
 \- \*\*SUID Hardening:\*\* Standard application binaries like Python should never have the SUID bit set, as it allows arbitrary command execution with root privileges.
-
