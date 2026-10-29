@@ -11,6 +11,7 @@ While you must understand the math for certifications and interviews, operators 
 
 In your terminal, you can run:
 
-Bash
+```Bash
 ipcalc 192.168.1.100/26
+```
 This instantly prints out the Network, HostMin, HostMax, and Broadcast addresses, color-coded in both binary and decimal.
