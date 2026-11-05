@@ -1,17 +1,16 @@
-As a penetration tester, when you compromise a machine and run ip a, the subnet mask tells you exactly how big the target environment is, where the firewalls likely sit, and what other machines you can pivot to. If you cannot calculate subnets in your head, you will scan the wrong IP ranges, trigger intrusion detection systems, and miss critical targets.Here is the comprehensive breakdown of IPv4 Subnetting and CIDR.1. The Anatomy of an IPv4 AddressAn IP address is not actually four numbers; it is a 32-bit binary sequence broken into four 8-bit chunks (called octets) just to make it readable for humans.Binary: 11000000 . 10101000 . 00000001 . 00001010Decimal: 192 . 168 . 1 . 10Every IP address is split into two distinct parts:The Network Portion: Like the street name in a physical address. Every computer on the same local network shares this exact same network portion.The Host Portion: Like the house number. This uniquely identifies a specific machine on that street.2. The Subnet Mask and CIDR NotationThe router needs a way to know exactly where the "street name" ends and the "house number" begins. That is what the Subnet Mask does.Historically, masks were written in decimal (e.g., 255.255.255.0). Today, we use CIDR (Classless Inter-Domain Routing) notation, which is much faster. CIDR simply counts how many binary 1s are in the subnet mask from left to right.A /24 CIDR means the first 24 bits are locked for the Network, leaving 8 bits for the Hosts.Math: If you have 8 bits for hosts, you can have $2^8 = 256$ total addresses in that network.3. The Four Pillars of a SubnetEvery time a network is carved out using a subnet mask, it is bound by four critical addresses. You must be able to identify these to run an accurate Nmap scan.Network Address (The Base): The very first IP in the subnet. It represents the entire network itself. It is mathematically impossible to assign this to a computer.First Usable Host: The Network Address + 1. Usually assigned to the default gateway (the router).Last Usable Host: The Broadcast Address - 1. The highest IP you can assign to a machine.Broadcast Address (The Ceiling): The very last IP in the subnet. If you send a packet here, it gets duplicated and blasted to every single machine on the subnet.4. Subnet Calculation Drill (Manual Execution)Hackers and network engineers use a shortcut called the Block Size (or Magic Number) to calculate subnets instantly without writing out 32 bits of binary.The Scenario: You compromise a machine and its IP is 192.168.1.100/26. You need to Nmap the rest of this specific subnet. What is your target range?Step 1: Find the Custom Subnet Mask
-A /26 means 26 bits are network, 6 bits are host.
-The first three octets are full (24 bits = 255.255.255).
-The 4th octet uses 2 bits (11000000 in binary). In decimal, $128 + 64 = 192$.Subnet Mask: 255.255.255.192Step 2: Calculate the Block Size
-Subtract the custom subnet mask value from 256.$256 - 192 = 64$.This means your network increments in blocks of 64.Step 3: Define the Network Boundaries
-Count up by your block size in the 4th octet:Subnet 1: 192.168.1.0 (Ends at .63)Subnet 2: 192.168.1.64 (Ends at .127)Subnet 3: 192.168.1.128 (Ends at .191)Subnet 4: 192.168.1.192 (Ends at .255)Step 4: Locate the Target
-The compromised IP is .100. That falls squarely inside Subnet 2.
-Therefore, your lateral movement boundaries are:Network Address: 192.168.1.64First Usable: 192.168.1.65Last Usable: 192.168.1.126Broadcast: 192.168.1.127Your Nmap Target: nmap 192.168.1.64/26
-5. Automated Tooling: ipcalc
-While you must understand the math for certifications and interviews, operators use tools in the field to prevent human error. Kali Linux comes with ipcalc.
+An IPv4 address is a 32-bit binary sequence divided into four 8-bit octets, acting as both a street name (the network) and a house number (the host). When operating in a SOC or during a penetration test, the subnet mask is your tactical map—it dictates exactly how large the target environment is, where the routing boundaries lie, and which IP addresses are valid for lateral movement.
 
-In your terminal, you can run:
+# Subnetting & CIDR Core Theory
+**Classless Inter-Domain Routing (CIDR) notation**
+it is a short hand that counts the number of locked `Network` bits from left to right. the remaining bits are unlocked `hosts` bits used to assign IP addresses to actual machines 
+## The 4 pillars of every Subnet
+**Network Address** The mathematical base of the subnet. It represents the network itself and cannot be assigned to a device.
+First Usable Host: Network Address + 1. Usually assigned to the default gateway (router).
+Last Usable Host: Broadcast Address - 1. The absolute highest IP you can ping or exploit in this block.
+Broadcast Address: The mathematical ceiling. Packets sent here are replicated and blasted to every machine on the subnet. Cannot be assigned to a device.
 
-```Bash
-ipcalc 192.168.1.100/26
-```
-This instantly prints out the Network, HostMin, HostMax, and Broadcast addresses, color-coded in both binary and decimal.
+## Rapid Block Size Calculation (The Hacker's Method)
+Instead of writing out 32 bits of binary, field operators use the "Block Size" or "Magic Number" method.
+1- Identify the custom subnet mask decimal value.
+2- Subtract that value from 256.
+3- The result is your block size (how much each subnet   increments by).
