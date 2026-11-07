@@ -1,5 +1,5 @@
 #Objective given 2 integers X and Y identify whether X > Y, X < Y or X = Y 
-
+#output is either of the three
 read X
 read Y
 if ((X < Y)); then
